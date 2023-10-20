@@ -1,0 +1,30 @@
+version: "2"
+services:
+  node:
+    container_name: "node"
+    image: "node:20"
+    working_dir: /home/nnergix/src
+    volumes:
+      - ./:/home/nnergix
+    ports:
+      - 3000:3000
+    command: sh -c "npm link && npm start"
+    networks:
+      - main
+  database:
+    container_name: "database"
+    image: 'postgres:latest'
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=nnergix
+    networks:
+      - main
+    volumes:
+      - ./data/:/var/lib/postgresql/data/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+networks:
+  main:
+    driver: bridge
